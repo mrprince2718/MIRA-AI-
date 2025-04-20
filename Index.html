@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRA-AI - Advanced Intelligence Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary-color: #10B981;
+            --dark-bg: #111827;
+            --dark-card: #1F2937;
+            --light-bg: #F9FAFB;
+            --light-card: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-light: #F3F4F6;
+            --transition-speed: 0.3s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            transition: background-color var(--transition-speed);
+        }
+        
+        body.dark {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+        }
+        
+        body.light {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+        
+        .app-container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .sidebar {
+            width: 260px;
+            transition: all var(--transition-speed);
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        
+        .sidebar.dark {
+            background-color: var(--dark-card);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar.light {
+            background-color: var(--light-card);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 60px);
+        }
+        
+        .new-chat-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .new-chat-btn.dark {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+        
+        .new-chat-btn.light {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+        }
+        
+        .new-chat-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-section-title {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+            opacity: 0.7;
+        }
+        
+        .chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .chat-item.dark {
+            color: var(--text-light);
+        }
+        
+        .chat-item.light {
+            color: var(--text-dark);
+        }
+        
+        .chat-item:hover {
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+        
+        .chat-item.active {
+            background-color: rgba(79, 70, 229, 0.2);
+            font-weight: 500;
+        }
+        
+        .chat-icon {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(128, 128, 128, 0.2);
+        }
+        
+        .settings-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .settings-item:hover {
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+            margin-left: auto;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(18px);
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .main-content.dark {
+            background-color: var(--dark-bg);
+        }
+        
+        .main-content.light {
+            background-color: var(--light-bg);
+        }
+        
+        .chat-container {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .welcome-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .welcome-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-weight: bold;
+            font-size: 32px;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5);
+        }
+        
+        .welcome-heading {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .welcome-subheading {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .suggestion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .suggestion-card {
+            padding: 1.25rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .suggestion-card.dark {
+            background-color: var(--dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .suggestion-card.light {
+            background-color: var(--light-card);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .suggestion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: var(--primary-color);
+        }
+        
+        .suggestion-card:hover.dark {
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+        
+        .suggestion-card:hover.light {
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .suggestion-icon {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .suggestion-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .suggestion-text {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+        
+        .message {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message.user.dark {
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+        
+        .message.user.light {
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .message.ai.dark {
+            background-color: var(--dark-card);
+        }
+        
+        .message.ai.light {
+            background-color: var(--light-card);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .message-avatar.user {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .message-avatar.ai {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .message-content {
+            flex: 1;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+        
+        .message-text {
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        
+        .message-text p {
+            margin-bottom: 0.75rem;
+        }
+        
+        .message-text p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .message-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+        
+        .message-action {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.2s;
+        }
+        
+        .message-action.dark {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+        
+        .message-action.light {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+        }
+        
+        .message-action:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .code-block {
+            position: relative;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.85rem;
+        }
+        
+        .code-language {
+            font-weight: 500;
+        }
+        
+        .code-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .code-action {
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        
+        .code-action:hover {
+            opacity: 1;
+        }
+        
+        .code-content {
+            padding: 1rem;
+            overflow-x: auto;
+            color: #d1d5db;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .code-line {
+            display: block;
+            white-space: pre;
+        }
+        
+        .thinking-box {
+            margin-top: 0.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .thinking-box.dark {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .thinking-box.light {
+            background-color: rgba(0, 0, 0, 0.02);
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .thinking-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .gallery-image {
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .gallery-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .input-container {
+            padding: 1.5rem;
+            position: relative;
+        }
+        
+        .input-box {
+            position: relative;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        
+        .input-box.dark {
+            background-color: var(--dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .input-box.light {
+            background-color: var(--light-card);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .input-box:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+        }
+        
+        .input-options {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem 0 1rem;
+        }
+        
+        .input-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .input-option.dark {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .input-option.light {
+            color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .input-option:hover, .input-option.active {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .input-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            max-height: 200px;
+            overflow-y: auto;
+            background: transparent;
+        }
+        
+        .input-textarea.dark {
+            color: var(--text-light);
+        }
+        
+        .input-textarea.light {
+            color: var(--text-dark);
+        }
+        
+        .input-textarea::placeholder {
+            opacity: 0.6;
+        }
+        
+        .input-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1rem 0.75rem 1rem;
+        }
+        
+        .input-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .input-button {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        
+        .input-button.dark {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+        
+        .input-button.light {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+        }
+        
+        .input-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .send-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0 1.25rem;
+            height: 36px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .send-button:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: currentColor;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typingAnimation {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 300px;
+                border-right: none;
+                border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+            }
+            
+            .main-content {
+                height: 70vh;
+            }
+            
+            .suggestion-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .markdown h1, .markdown h2, .markdown h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .markdown h1 {
+            font-size: 1.5rem;
+        }
+        
+        .markdown h2 {
+            font-size: 1.25rem;
+        }
+        
+        .markdown h3 {
+            font-size: 1.1rem;
+        }
+        
+        .markdown ul, .markdown ol {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .markdown li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .markdown a:hover {
+            text-decoration: underline;
+        }
+        
+        .markdown blockquote {
+            border-left: 3px solid var(--primary-color);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .markdown table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .markdown th, .markdown td {
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            padding: 0.5rem;
+            text-align: left;
+        }
+        
+        .markdown th {
+            background-color: rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+        }
+        
+        .markdown pre {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown code {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .markdown img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body class="dark">
+    <div class="app-container">
+        <div class="sidebar dark">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">M</div>
+                    <div class="logo-text">MIRA-AI</div>
+                </div>
+            </div>
+            <div class="sidebar-content">
+                <div class="new-chat-btn dark">
+                    <span>New Chat</span>
+                    <i class="fas fa-plus"></i>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Recent Conversations</div>
+                    <div class="chat-history">
+                        <div class="chat-item active dark">
+                            <i class="fas fa-comment chat-icon"></i>
+                            <div class="chat-title">Getting started with MIRA</div>
+                        </div>
+                        <div class="chat-item dark">
+                            <i class="fas fa-comment chat-icon"></i>
+                            <div class="chat-title">Creative writing assistant</div>
+                        </div>
+                        <div class="chat-item dark">
+                            <i class="fas fa-code chat-icon"></i>
+                            <div class="chat-title">React component help</div>
+                        </div>
+                        <div class="chat-item dark">
+                            <i class="fas fa-image chat-icon"></i>
+                            <div class="chat-title">UI design suggestions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-footer">
+                    <div class="settings-item toggle-container">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="theme-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                    <div class="settings-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content dark">
+            <div class="chat-container" id="chat-container">
+                <div class="welcome-container">
+                    <div class="welcome-logo">M</div>
+                    <h1 class="welcome-heading">Welcome to MIRA-AI</h1>
+                    <p class="welcome-subheading">Your advanced AI assistant powered by cutting-edge technology. Ask me anything or try one of the examples below to get started.</p>
+                    
+                    <div class="suggestion-grid">
+                        <div class="suggestion-card dark" onclick="addSuggestion('Write a creative short story about a time traveler who discovers an ancient civilization with advanced technology.')">
+                            <div class="suggestion-icon"><i class="fas fa-feather-alt"></i></div>
+                            <div class="suggestion-title">Creative Writing</div>
+                            <div class="suggestion-text">Generate stories, poems, or scripts with creative elements and engaging narratives.</div>
+                        </div>
+                        
+                        <div class="suggestion-card dark" onclick="addSuggestion('Create a responsive navbar component using React and Tailwind CSS with mobile menu support.')">
+                            <div class="suggestion-icon"><i class="fas fa-code"></i></div>
+                            <div class="suggestion-title">Code Generation</div>
+                            <div class="suggestion-text">Get help with programming, debugging, or code optimization in various languages.</div>
+                        </div>
+                        
+                        <div class="suggestion-card dark" onclick="addSuggestion('Explain quantum computing principles in simple terms, as if explaining to a high school student.')">
+                            <div class="suggestion-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="suggestion-title">Learning Assistant</div>
+                            <div class="suggestion-text">Learn complex topics through clear explanations and guided examples.</div>
+                        </div>
+                        
+                        <div class="suggestion-card dark" onclick="addSuggestion('Design a weekly meal plan for a vegetarian diet focused on high protein content and Mediterranean flavors.')">
+                            <div class="suggestion-icon"><i class="fas fa-utensils"></i></div>
+                            <div class="suggestion-title">Lifestyle Planning</div>
+                            <div class="suggestion-text">Get personalized advice for nutrition, fitness, productivity and more.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-box dark">
+                    <div class="input-options">
+                        <div class="input-option dark" id="deepthink-option">
+                            <i class="fas fa-brain"></i>
+                            <span>DeepThink</span>
+                        </div>
+                        <div class="input-option dark" id="search-option">
+                            <i class="fas fa-search"></i>
+                            <span>Search</span>
+                        </div>
+                    </div>
+                    
+                    <textarea class="input-textarea dark" id="user-input" placeholder="Ask MIRA anything..." rows="1"></textarea>
+                    
+                    <div class="input-actions">
+                        <div class="input-buttons">
+                            <div class="input-button dark" title="Upload file">
+                                <i class="fas fa-paperclip"></i>
+                            </div>
+                            <div class="input-button dark" title="Record audio">
+                                <i class="fas fa-microphone"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="send-button" id="send-button">
+                            <span>Send</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggling
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const inputTextarea = document.querySelector('.input-textarea');
+        const inputBox = document.querySelector('.input-box');
+        const cards = document.querySelectorAll('.suggestion-card');
+        const options = document.querySelectorAll('.input-option');
+        const buttons = document.querySelectorAll('.input-button');
+        
+        themeToggle.addEventListener('change', function() {
+            toggleTheme();
+        });
+        
+        function toggleTheme() {
+            const isDark = body.classList.contains('dark');
+            
+            if (isDark) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                sidebar.classList.remove('dark');
+                sidebar.classList.add('light');
+                mainContent.classList.remove('dark');
+                mainContent.classList.add('light');
+                inputTextarea.classList.remove('dark');
+                inputTextarea.classList.add('light');
+                inputBox.classList.remove('dark');
+                inputBox.classList.add('light');
+                
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('dark');
+                    item.classList.add('light');
+                });
+                
+                document.querySelectorAll('.suggestion-card').forEach(card => {
+                    card.classList.remove('dark');
+                    card.classList.add('light');
+                });
+                
+                document.querySelectorAll('.input-option').forEach(option => {
+                    option.classList.remove('dark');
+                    option.classList.add('light');
+                });
+                
+                document.querySelectorAll('.input-button').forEach(button => {
+                    button.classList.remove('dark');
+                    button.classList.add('light');
+                });
+                
+                document.querySelectorAll('.new-chat-btn').forEach(btn => {
+                    btn.classList.remove('dark');
+                    btn.classList.add('light');
+                });
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                sidebar.classList.remove('light');
+                sidebar.classList.add('dark');
+                mainContent.classList.remove('light');
+                mainContent.classList.add('dark');
+                inputTextarea.classList.remove('light');
+                inputTextarea.classList.add('dark');
+                inputBox.classList.remove('light');
+                inputBox.classList.add('dark');
+                
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('light');
+                    item.classList.add('dark');
+                });
+                
+                document.querySelectorAll('.suggestion-card').forEach(card => {
+                    card.classList.remove('light');
+                    card.classList.add('dark');
+                });
+                
+                document.querySelectorAll('.input-option').forEach(option => {
+                    option.classList.remove('light');
+                    option.classList.add('dark');
+                });
+                
+                document.querySelectorAll('.input-button').forEach(button => {
+                    button.classList.remove('light');
+                    button.classList.add('dark');
+                });
+                
+                document.querySelectorAll('.new-chat-btn').forEach(btn => {
+                    btn.classList.remove('light');
+                    btn.classList.add('dark');
+                });
+            }
+            
+            // Update messages if any exist
+            document.querySelectorAll('.message').forEach(msg => {
+                if (isDark) {
+                    msg.classList.remove('dark');
+                    msg.classList.add('light');
+                } else {
+                    msg.classList.remove('light');
+                    msg.classList.add('dark');
+                }
+            });
+            
+            document.querySelectorAll('.message-action').forEach(action => {
+                if (isDark) {
+                    action.classList.remove('dark');
+                    action.classList.add('light');
+                } else {
+                    action.classList.remove('light');
+                    action.classList.add('dark');
+                }
+            });
+            
+            document.querySelectorAll('.thinking-box').forEach(box => {
+                if (isDark) {
+                    box.classList.remove('dark');
+                    box.classList.add('light');
+                } else {
+                    box.classList.remove('light');
+                    box.classList.add('dark');
+                }
+            });
+        }
+        
+        // Input auto-resize
+        const textarea = document.getElementById('user-input');
+        
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        // DeepThink option toggle
+        const deepthinkOption = document.getElementById('deepthink-option');
+        deepthinkOption.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+        
+        // Search option toggle
+        const searchOption = document.getElementById('search-option');
+        searchOption.addEventListener('click', function() {
+            this.classList.toggle('active');
+            if (deepthinkOption.classList.contains('active')) {
+                deepthinkOption.classList.remove('active');
+            }
+        });
+        
+        // Add suggestion to input
+        function addSuggestion(text) {
+            const container = document.getElementById('chat-container');
+            const welcome = document.querySelector('.welcome-container');
+            
+            if (welcome) {
+                welcome.remove();
+            }
+            
+            const input = document.getElementById('user-input');
+            input.value = text;
+            input.style.height = 'auto';
+            input.style.height = (input.scrollHeight) + 'px';
+            input.focus();
+        }
+        
+        // Send message
+        const sendButton = document.getElementById('send-button');
+        sendButton.addEventListener('click', sendMessage);
+        
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                const container = document.getElementById('chat-container');
+                const welcome = document.querySelector('.welcome-container');
+                
+                if (welcome) {
+                    welcome.remove();
+                }
+                
+                // Add user message
+                addMessage('user', message);
+                
+                // Clear input
+                input.value = '';
+                input.style.height = 'auto';
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Simulate AI response after delay
+                setTimeout(() => {
+                    // Remove typing indicator
+                    const indicator = document.querySelector('.typing-indicator');
+                    if (indicator) indicator.remove();
+                    
+                    // Add AI response
+                    let response;
+                    const isDeepThink = deepthinkOption.classList.contains('active');
+                    
+                    if (message.toLowerCase().includes('code') || message.toLowerCase().includes('programming') || message.toLowerCase().includes('javascript')) {
+                        response = generateCodeResponse(message);
+                    } else if (message.toLowerCase().includes('image') || message.toLowerCase().includes('picture') || message.toLowerCase().includes('design')) {
+                        response = generateImageResponse(message);
+                    } else {
+                        response = generateTextResponse(message, isDeepThink);
+                    }
+                    
+                    addMessage('ai', response, isDeepThink);
+                    
+                    // Scroll to bottom
+                    container.scrollTop = container.scrollHeight;
+                }, 1500 + Math.random() * 1500);
+                
+                // Scroll to bottom
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+        
+        function addMessage(type, content, showThinking = false) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type} ${body.classList.contains('dark') ? 'dark' : 'light'}`;
+            
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            let avatar, name;
+            if (type === 'user') {
+                avatar = '<i class="fas fa-user"></i>';
+                name = 'You';
+            } else {
+                avatar = 'M';
+                name = 'MIRA-AI';
+            }
+            
+            const thinkingHTML = showThinking ? `
+                <div class="thinking-box ${body.classList.contains('dark') ? 'dark' : 'light'}">
+                    <div class="thinking-title"><i class="fas fa-brain"></i> Thinking Process</div>
+                    <div class="thinking-content">I'll approach this by analyzing the key components of the question, identifying the core concepts, and structuring a comprehensive response that addresses all aspects with relevant examples and clear explanations.</div>
+                </div>
+            ` : '';
+            
+            // Process content for code blocks
+            content = processContent(content);
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar ${type}">${avatar}</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <div class="message-name">${name}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                    <div class="message-text markdown">${content}</div>
+                    ${thinkingHTML}
+                    <div class="message-actions">
+                        ${type === 'ai' ? `
+                            <div class="message-action ${body.classList.contains('dark') ? 'dark' : 'light'}">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </div>
+                            <div class="message-action ${body.classList.contains('dark') ? 'dark' : 'light'}">
+                                <i class="fas fa-redo"></i>
+                                <span>Regenerate</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(messageDiv);
+            
+            // Add event listeners to copy buttons
+            const copyButtons = messageDiv.querySelectorAll('.message-action:first-child');
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const textToCopy = messageDiv.querySelector('.message-text').textContent;
+                    navigator.clipboard.writeText(textToCopy);
+                    
+                    // Show copied indicator
+                    const span = this.querySelector('span');
+                    const originalText = span.textContent;
+                    span.textContent = 'Copied!';
+                    setTimeout(() => {
+                        span.textContent = originalText;
+                    }, 2000);
+                });
+            });
+        }
+        
+        function showTypingIndicator() {
+            const container = document.getElementById('chat-container');
+            const indicatorDiv = document.createElement('div');
+            indicatorDiv.className = 'typing-indicator';
+            indicatorDiv.innerHTML = `
+                <div class="message-avatar ai">M</div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            container.appendChild(indicatorDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function processContent(content) {
+            // Process code blocks
+            const codeBlockRegex = /```([a-zA-Z]*)\n([\s\S]*?)```/g;
+            content = content.replace(codeBlockRegex, (match, language, code) => {
+                return `
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-language">${language || 'code'}</div>
+                        <div class="code-actions">
+                            <div class="code-action" title="Copy code"><i class="fas fa-copy"></i></div>
+                        </div>
+                    </div>
+                    <div class="code-content">
+                        ${code.split('\n').map(line => `<span class="code-line">${line}</span>`).join('')}
+                    </div>
+                </div>
+                `;
+            });
+            
+            // Process inline code
+            content = content.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Process bold text
+            content = content.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            
+            // Process italic text
+            content = content.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            
+            // Process links
+            content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // Process paragraphs
+            content = '<p>' + content.replace(/\n\n/g, '</p><p>') + '</p>';
+            
+            // Replace single newlines with <br>
+            content = content.replace(/\n/g, '<br>');
+            
+            return content;
+        }
+        
+        function generateTextResponse(message, isDeepThink) {
+            if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+                return "Hello! I'm MIRA-AI, your advanced AI assistant. How can I help you today? I can assist with creative writing, code generation, answering questions, designing solutions, and much more.";
+            }
+            
+            if (message.toLowerCase().includes('who are you') || message.toLowerCase().includes('what can you do')) {
+                return "I'm MIRA-AI, an advanced artificial intelligence assistant designed to help with a wide range of tasks. I can generate creative content, write code, answer questions, solve problems, and provide assistance across multiple domains. My capabilities include natural language understanding, code generation, creative writing, logical reasoning, and much more. How can I assist you today?";
+            }
+            
+            if (message.toLowerCase().includes('write') && (message.toLowerCase().includes('story') || message.toLowerCase().includes('poem'))) {
+                if (message.toLowerCase().includes('time travel')) {
+                    return `# The Chronos Paradox
+
+The air crackled with electricity as Dr. Elena Reyes made the final adjustments to her time displacement device. After fifteen years of research, countless failures, and the ridicule of her peers, she was ready to make history—or perhaps, unmake it.
+
+"Chronos sequence initiating," she whispered to herself, pressing the activation key.
+
+The laboratory filled with a pulsating blue light, molecules in the air seeming to dance and separate before her eyes. Pain gripped her body as reality itself bent around her form, stretching her consciousness across what felt like an infinite span of moments.
+
+When the world reformed, Elena found herself standing on a vast plain beneath a violet sky. Two moons hung overhead—one silver, one with a distinct golden hue—illuminating a sprawling metropolis in the distance. Spires of crystalline material reached toward the heavens, connected by translucent bridges that glowed with inner light.
+
+"Impossible," she gasped. Her calculations had been aimed at the past—approximately 3,000 BCE—to observe early Mesopotamian civilization. This was certainly not ancient Earth.
+
+A soft humming approached from behind. Elena turned to find a hovering platform guided by a figure draped in iridescent fabric.
+
+"Another Traveler," the figure said in perfect English, though their mouth didn't move in sync with the words. "You seem disoriented. First jump?"
+
+"Who are you? Where am I?" Elena demanded, her scientific mind racing to process the impossible scenario.
+
+"I am Karem, Keeper of Arrivals. You stand in Atlantara, what your people would call Atlantis, though our civilization exists simultaneously across multiple temporal planes."
+
+Elena's knees weakened. "Atlantis was real? But I was aiming for Mesopotamia, thousands of years in the past."
+
+Karem made a gesture that might have been the equivalent of a smile. "Your device worked perfectly, Doctor Reyes. You simply failed to account for the temporal drift caused by civilizations like ours that have mastered time itself. We create... gravitational wells in the timestream, pulling temporal travelers toward our nexus points."
+
+"You know my name," Elena whispered.
+
+"We've been expecting you. In fact, your arrival has been documented in our histories for over twelve thousand years. Would you like to see your laboratory?"
+
+"My laboratory? I don't understand."
+
+"The one you establish here. The one where, three centuries from now in your personal timeline, you perfect the very technology that brought you here today. The very technology our civilization was founded upon." Karem extended a hand. "Your journey hasn't ended, Doctor Reyes. It's only just begun."
+
+As Elena stepped onto the platform, a profound understanding washed over her. She hadn't discovered time travel. Time travel had discovered her.`;
+                } else {
+                    return `# The Whispering Woods
+
+Maya had always been told the forest behind her grandmother's house was ordinary. Just trees, undergrowth, and the occasional woodland creature—nothing special.
+
+They were wrong.
+
+On her thirteenth birthday, while her parents argued inside about the drive back to the city, Maya wandered deeper into the woods than ever before. The late afternoon sunlight filtered through the canopy, casting dappled shadows that seemed to move even when the breeze didn't stir the leaves.
+
+"Hello?" she called out, hearing what sounded like whispers just beyond her range of hearing.
+
+A flutter of movement caught her eye—a small blue bird with a surprisingly geometric pattern on its wings. It hopped from branch to branch, always staying just ahead, as if beckoning her to follow.
+
+Against her better judgment, she did.
+
+The bird led her to an ancient oak tree, its trunk wider than her grandmother's car. Nestled between two massive roots was a small wooden door, no taller than Maya's knee, with an intricate brass knocker shaped like a leaf.
+
+The bird landed on the knocker and looked at her expectantly.
+
+"You want me to knock?" Maya asked, feeling silly for talking to a bird.
+
+It chirped once in what seemed like affirmation.
+
+Kneeling down, Maya grasped the cool metal knocker and rapped it gently against the wood. Three times, as seemed proper for such an unusual door.
+
+For a moment, nothing happened. Then, a creak—not from the door, but from the tree itself. The bark above the door rippled and shifted, forming a face with deep-set eyes and a mouth formed from a knot in the wood.
+
+"It has been seventy-three years since a human child found their way to my door," the tree spoke, its voice like rustling leaves and creaking branches. "What is your name, young one?"
+
+Maya swallowed hard. "M-Maya Johnson."
+
+"Maya," the tree repeated slowly, as if tasting the name. "And tell me, Maya Johnson, do you believe in magic?"
+
+"I... I don't know," she answered honestly.
+
+The tree's bark-lips curled into what might have been a smile. "Good. Those who are certain of magic's existence or nonexistence are rarely worthy of experiencing its true nature. Uncertainty—that is where wonder begins."
+
+The small door swung open, revealing not a hollow in the tree, but a passage bathed in warm golden light.
+
+"The Whispering Woods have chosen you as their new Keeper, Maya Johnson. Through this door lies your inheritance—knowledge gathered over millennia, creatures forgotten by your world, and responsibilities greater than you can imagine."
+
+The blue bird chirped again, flying through the doorway.
+
+"Will I be able to come back?" Maya asked, thinking of her family.
+
+"The door will always return you to your world at the exact moment you left," the tree assured her. "Time flows differently in the realm of the Whispers."
+
+Maya took a deep breath and ducked through the doorway, into a world where trees taught ancient languages, streams carried memories, and stars sang lullabies to sleeping mountains.
+
+The Whispering Woods had found their new Keeper, and Maya Johnson would never see the ordinary world in quite the same way again.`;
+                }
+            }
+            
+            if (message.toLowerCase().includes('explain') && message.toLowerCase().includes('quantum')) {
+                return `# Understanding Quantum Computing
+
+Quantum computing is like having a library where all the books can be read simultaneously, rather than one at a time.
+
+## Basic Principles
+
+Conventional computers use bits that can be either 0 or 1, like a light switch that's either off or on. These bits are the foundation of all digital information processing.
+
+Quantum computers, however, use **quantum bits** or **qubits**. Thanks to a property called **superposition**, qubits can exist in multiple states at once—they can be both 0 and 1 simultaneously, with different probabilities for each.
+
+Think of it this way:
+- Classical bit: A coin that's either heads (0) or tails (1)
+- Qubit: A spinning coin that's both heads and tails until you look at it
+
+## Entanglement: The Quantum Magic
+
+Another key quantum property is **entanglement**, where qubits become correlated in ways that have no classical equivalent. When two qubits are entangled, the state of one instantly influences the state of the other, regardless of the distance separating them.
+
+This would be like having two coins in different cities that always land on the same side when flipped, even though neither coin "knows" which side the other landed on.
+
+## Why Quantum Computing Matters
+
+The power of quantum computing comes from processing multiple possibilities simultaneously:
+
+1. **Exponential Power**: Each additional qubit doubles the computational power. A 300-qubit computer could represent more states than there are atoms in the observable universe.
+
+2. **Specialized Problem-Solving**: Quantum computers excel at:
+   - Factoring large numbers (which could break current encryption)
+   - Searching unsorted databases
+   - Simulating quantum systems (like chemical reactions)
+   - Optimizing complex systems (like traffic flow or supply chains)
+
+## Current Limitations
+
+Quantum computing faces significant challenges:
+
+- **Decoherence**: Qubits are extremely sensitive to environmental disturbances and can lose their quantum properties quickly
+- **Error rates**: Quantum operations are prone to errors that must be corrected
+- **Scalability**: Building large, stable quantum systems is technically challenging
+
+## The Future
+
+While we're still in the early days of quantum computing (similar to where classical computers were in the 1950s), progress is accelerating. Many experts believe quantum computers will transform fields like:
+
+- Drug discovery
+- Materials science
+- Artificial intelligence
+- Climate modeling
+- Cryptography
+
+In summary, quantum computing harnesses the strange properties of quantum mechanics to process information in fundamentally new ways, potentially solving problems that would take classical computers billions of years to solve.`;
+            }
+            
+            if (message.toLowerCase().includes('meal plan') || message.toLowerCase().includes('diet')) {
+                return `# Vegetarian High-Protein Mediterranean Meal Plan
+
+This weekly meal plan combines vegetarian protein sources with Mediterranean flavors for a balanced, nutritious diet.
+
+## Monday
+
+**Breakfast:** Greek yogurt parfait
+- 1 cup Greek yogurt (15g protein)
+- 1/4 cup granola
+- Mixed berries
+- Drizzle of honey
+- Sprinkle of walnuts
+
+**Lunch:** Mediterranean lentil salad
+- 1 cup cooked lentils (18g protein)
+- Cherry tomatoes, cucumber, red onion
+- Feta cheese (6g protein)
+- Olives
+- Lemon-herb dressing
+
+**Dinner:** Eggplant moussaka
+- Roasted eggplant layers
+- Lentil and mushroom filling (14g protein)
+- Bechamel sauce made with milk and eggs (8g protein)
+- Side of Greek salad
+
+## Tuesday
+
+**Breakfast:** Shakshuka with chickpeas
+- Eggs poached in tomato sauce (12g protein)
+- Added chickpeas (7g protein)
+- Spinach
+- Whole grain pita
+
+**Lunch:** Quinoa tabbouleh bowl
+- 1 cup quinoa (8g protein)
+- Parsley, mint, cucumber, tomato
+- Roasted chickpeas (7g protein)
+- Tahini dressing
+
+**Dinner:** Mediterranean stuffed peppers
+- Bell peppers stuffed with:
+  - Farro (7g protein per cup)
+  - White beans (15g protein per cup)
+  - Sun-dried tomatoes
+  - Pine nuts
+  - Fresh herbs
+- Side of tzatziki
+
+## Wednesday
+
+**Breakfast:** Protein-packed Mediterranean toast
+- Whole grain bread (5g protein)
+- Hummus spread (3g protein)
+- Sliced avocado
+- Cherry tomatoes
+- Dukkah spice blend
+
+**Lunch:** Greek chickpea power bowl
+- Roasted chickpeas (14g protein)
+- Quinoa (4g protein)
+- Cucumber, tomato, red onion
+- Kalamata olives
+- Tahini-lemon dressing
+
+**Dinner:** Vegetarian paella
+- Bomba rice
+- Artichoke hearts
+- Roasted red peppers
+- Green beans
+- Butter beans (9g protein per cup)
+- Saffron broth
+- Lemon wedges
+
+## Thursday
+
+**Breakfast:** Spiced tempeh breakfast scramble
+- Crumbled tempeh (20g protein per cup)
+- Bell peppers, onions
+- Mediterranean spices
+- Whole wheat wrap
+
+**Lunch:** White bean and kale soup
+- Cannellini beans (12g protein per cup)
+- Tuscan kale
+- Carrots, celery, onion
+- Rosemary and thyme
+- Whole grain roll
+
+**Dinner:** Falafel platter
+- Homemade falafel (12g protein)
+- Tabbouleh
+- Hummus
+- Baba ganoush
+- Whole wheat pita
+
+## Friday
+
+**Breakfast:** Mediterranean tofu scramble
+- Scrambled tofu (14g protein)
+- Spinach
+- Tomatoes
+- Olives
+- Za'atar seasoning
+
+**Lunch:** Mediterranean grain bowl
+- Freekeh (8g protein per cup)
+- Roasted vegetables
+- Marinated tofu (10g protein)
+- Herb-tahini dressing
+
+**Dinner:** Greek-style stuffed zucchini boats
+- Zucchini stuffed with:
+  - Quinoa (4g protein per cup)
+  - White beans (6g protein)
+  - Sun-dried tomatoes
+  - Spinach
+  - Feta cheese (5g protein)
+
+## Saturday
+
+**Breakfast:** Labneh with olive oil and za'atar
+- Labneh (strained yogurt) (10g protein)
+- Extra virgin olive oil
+- Za'atar spice
+- Cucumber slices
+- Whole grain pita
+
+**Lunch:** Tuscan white bean salad
+- Cannellini beans (15g protein)
+- Arugula
+- Red onion
+- Sun-dried tomatoes
+- Lemon-herb vinaigrette
+
+**Dinner:** Vegetarian moussaka
+- Lentil and mushroom base (12g protein)
+- Roasted eggplant and potatoes
+- Greek yogurt bechamel (10g protein)
+- Side Greek salad
+
+## Sunday
+
+**Breakfast:** Savory Mediterranean oatmeal
+- Steel-cut oats (7g protein)
+- Roasted cherry tomatoes
+- Poached egg (6g protein)
+- Fresh herbs
+- Crumbled feta (6g protein)
+
+**Lunch:** Mezze platter
+- Hummus (6g protein)
+- Baba ganoush
+- Stuffed grape leaves
+- Marinated tempeh (12g protein)
+- Whole grain crackers
+- Crudités
+
+**Dinner:** Mediterranean lentil stew
+- French lentils (18g protein per cup)
+- Roasted vegetables
+- Fresh herbs
+- Serve with Greek yogurt (15g protein per cup)
+- Whole grain pita
+
+## Snack Options (Throughout Week)
+
+- Greek yogurt with honey and walnuts
+- Roasted chickpeas with Mediterranean spices
+- Hummus with vegetable sticks
+- Mixed nuts and dried fruits
+- Labneh with olive oil and za'atar
+- Edamame with sea salt
+
+This meal plan provides approximately 75-100g of protein daily, rich Mediterranean flavors, and plenty of plant-based nutrients!`;
+            }
+            
+            // Default response for other queries
+            if (isDeepThink) {
+                return "I've analyzed your question in detail. Based on my understanding, I can provide you with comprehensive information about this topic.\n\n" + 
+                       "The key aspects to consider are:\n\n" +
+                       "1. **First, let's establish the fundamentals** - Understanding the core concepts is essential to properly address your query.\n\n" +
+                       "2. **Looking at different perspectives** - There are several ways to approach this topic, each with its own merits.\n\n" +
+                       "3. **Practical applications** - Beyond theory, there are many real-world applications worth exploring.\n\n" +
+                       "To give you a thorough response, I'd need to understand more specifically what aspects of this topic interest you most. Could you provide additional details about what you're looking to learn?";
+            } else {
+                return "Thank you for your message! I'm MIRA-AI, and I'm here to assist you with any questions or tasks you might have. Whether you need information, creative content, code, or problem-solving help, I'm equipped to provide helpful responses.\n\n" +
+                       "To give you the most relevant assistance, could you please provide more details about what you're looking for? I can then tailor my response to your specific needs.";
+            }
+        }
+        
+        function generateCodeResponse(message) {
+            if (message.toLowerCase().includes('navbar') && message.toLowerCase().includes('react')) {
+                return `I'd be happy to create a responsive navbar component using React and Tailwind CSS with mobile menu support! Here's a complete implementation:
+
+First, let's install the necessary dependencies if you haven't already:
+
+```bash
+npm install react react-dom @headlessui/react @heroicons/react
