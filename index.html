@@ -1,0 +1,20 @@
+// App.jsx import React, { useState } from 'react'; import { Input } from '@/components/ui/input'; import { Button } from '@/components/ui/button'; import { Card, CardContent } from '@/components/ui/card'; import { Send } from 'lucide-react';
+
+export default function App() { const [userInput, setUserInput] = useState(''); const [messages, setMessages] = useState([]);
+
+const handleSend = async () => { if (!userInput.trim()) return;
+
+const newMessage = { role: 'user', content: userInput };
+setMessages([...messages, newMessage]);
+
+// Call your AI backend here (simulate for now)
+const botReply = await getMIRAResponse(userInput);
+setMessages([...messages, newMessage, { role: 'assistant', content: botReply }]);
+setUserInput('');
+
+};
+
+const getMIRAResponse = async (text) => { // Replace this later with actual API if (text.toLowerCase().includes('image')) return 'Sure! Generating an image...'; if (text.toLowerCase().includes('code')) return 'Here is a code snippet for you...'; if (text.toLowerCase().includes('blog')) return 'Let me write a blog paragraph for you...'; return 'Here is my answer: ' + text; };
+
+return ( <div className="min-h-screen bg-gradient-to-br from-sky-500 via-purple-500 to-black text-white flex flex-col items-center justify-center p-4"> <h1 className="text-4xl font-bold mb-4">MIRA AI</h1> <Card className="w-full max-w-2xl bg-black/30 backdrop-blur-md rounded-2xl p-4"> <CardContent className="space-y-4 h-[60vh] overflow-y-auto"> {messages.map((msg, idx) => ( <div key={idx} className={text-${msg.role === 'user' ? 'right' : 'left'} text-base}> <span className={block ${msg.role === 'user' ? 'text-sky-300' : 'text-purple-300'}}>{msg.content}</span> </div> ))} </CardContent> <div className="flex mt-4"> <Input placeholder="Ask MIRA anything..." className="flex-1 bg-white/10 border-white/20" value={userInput} onChange={(e) => setUserInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSend()} /> <Button className="ml-2 bg-sky-500 hover:bg-purple-500" onClick={handleSend}> <Send size={20} /> </Button> </div> </Card> </div> ); }
+
